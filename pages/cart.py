@@ -114,3 +114,38 @@ class CartPage(tk.Frame):
 
         self.lbl_cart_total = tk.Label(self.total_frame, text=f"${self.calculate_total():.2f}")
         self.lbl_cart_total.grid(row=0, column=5, sticky='e')
+            
+    def update_quantity(self, item_id, name, change):
+        cursor = self.db_conn.cursor()
+        if change == -1:
+            cursor.execute("UPDATE cart_item SET quantity = quantity - 1 WHERE cart_id = ? AND item_id = ?", (self.cart_id, item_id))
+        else:
+            cursor.execute("UPDATE cart_item SET quantity = quantity + 1 WHERE cart_id = ? AND item_id = ?", (self.cart_id, item_id))
+
+        cursor.execute("SELECT quantity FROM cart_item WHERE cart_id = ? AND item_id = ?", (self.cart_id, item_id))
+        self.lbl_cart_total.configure(text=f"${self.calculate_total():.2f}")
+        new_quantity = cursor.fetchone()[0]
+        
+        if new_quantity <= 0:
+            cursor.execute("DELETE FROM cart_item WHERE cart_id = ? AND item_id = ?", (self.cart_id, item_id))
+            messagebox.showinfo("Item removed", f"Item {name} has been removed from your cart.")
+
+        self.db_conn.commit()
+        self.N_cart_items = self.fetch_N_cart_items()
+        self.button_cart.configure(text=self.N_cart_items)
+        self.total_frame.destroy()
+        self.update_item_frames()
+
+    def calculate_total(self):
+        cursor = self.db_conn.cursor()
+        cursor.execute("SELECT SUM(i.price * ci.quantity) \
+                       FROM items AS i \
+                       JOIN cart_item AS ci \
+                       ON i.item_id = ci.item_id \
+                       WHERE ci.cart_id = ?", (self.cart_id,))
+        total = cursor.fetchone()[0]
+        return total if total else 0.0
+
+    def proceed_to_payment(self):
+        # Placeholder function for proceeding to payment
+        messagebox.showinfo("Proceed to Payment", "Now proceeding to the payment page.")
