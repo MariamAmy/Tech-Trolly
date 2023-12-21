@@ -8,33 +8,16 @@ SQLite, Tech Trolly offers users an intuitive and efficient shopping experience.
 documentation will provide a detailed breakdown of each component, offering insights into the
 development process and the unique features of the application.
 
-## Main Features
+## Running the Project
 
-1. User Management:
-There are 2 types of users: Admin and Customer.
--
--
-User
-✓ Implement user authentication and authorization.
-✓ Each user should have unique credentials.
-✓ Users should have their own shopping carts.
-Admin
-✓ Each admin can add new items to the grocery store as well as adding other
-admins.
-2. Shopping Cart:
-- Users can add items to their shopping carts.
-- Users can remove items from their shopping carts.
-- Users can view the contents of their shopping carts.
-3. Grocery List:
-- Display a list of available groceries in the shop.
-- Implement filtering options based on:
-✓ Price range
-✓ Brand name
-✓ Brand nationality✓ Category
-✓ On Discount
-4. Search Functionality:
-- Users can type in the name of the grocery, category, or brand to search for a
-specific item.
-5. Product Statistics:
-- Show the number of users who have purchased a specific product in total.
-- Show the number of users who have purchased a product in the last 24 hours.
+1. Install Dependencies:
+- Run the following command to install required dependencies:
+“pip install Tkinter SQLite3 Random Numpy Hashlib Faker Pillow Screeninfo Datetime”
+
+2. Download and Run:
+- Download the project from GitHub.
+- Navigate to the project directory and run: “python application.py”
+  
+3. Enjoy the Application:
+- The "application.py" file manages all app pages.
+- Start enjoying the grocery shop application!
