@@ -1,6 +1,6 @@
 # Tech-Trolly
 
-#Project Overview
+# Project Overview
 
 This project, named 'Tech Trolly,' is a desktop application designed to serve as a virtual grocery
 shop, as an Amazon clone but tailored for desktop use. Developed using Python, Tkinter, and
