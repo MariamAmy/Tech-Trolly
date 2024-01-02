@@ -20,8 +20,7 @@ development process and the unique features of the application.
 - Navigate to the project directory and run:
 
 '''python
-  “python application.py”
-'''
+python application.py
 
 3. Enjoy the Application:
 - The "application.py" file manages all app pages.
