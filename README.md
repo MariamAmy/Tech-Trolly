@@ -19,7 +19,7 @@ development process and the unique features of the application.
 - Download the project from GitHub.
 - Navigate to the project directory and run:
 
-'''python
+```bash
 python application.py
 
 3. Enjoy the Application:
