@@ -19,8 +19,10 @@ development process and the unique features of the application.
 - Download the project from GitHub.
 - Navigate to the project directory and run:
 
+'''
   “python application.py”
-  
+'''
+
 3. Enjoy the Application:
 - The "application.py" file manages all app pages.
 - Start enjoying the grocery shop application!
