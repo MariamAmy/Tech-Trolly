@@ -12,9 +12,10 @@ development process and the unique features of the application.
 
 1. Install Dependencies:
 - Run the following command to install required dependencies:
-  
+  ```python
   “pip install Tkinter SQLite3 Random Numpy Hashlib Faker Pillow Screeninfo Datetime”
-
+  ```
+  
 2. Download and Run:
 - Download the project from GitHub.
 - Navigate to the project directory and run:
@@ -24,5 +25,5 @@ python application.py
 ```
 
 3. Enjoy the Application:
-- The "application.py" file manages all app pages.
+- The ```python "application.py"``` file manages all app pages.
 - Start enjoying the grocery shop application!
