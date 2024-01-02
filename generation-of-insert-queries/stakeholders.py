@@ -1,28 +1,45 @@
 import random
 from faker import Faker
-import numpy as np
+
+# Constants
+N_BRANDS = 100
+
+# Sets to keep track of generated data
+generated_brand_names = set()
 
 # Instantiate a Faker object
 fake = Faker()
 
 def generate_nationality():
-    # Some possible nationalities for diversity in brand origins
-    nationalities = ['Egyptian', 'American', 'French', 'Italian', 'Spanish', 'Mexican', 'Canadian', 'German', 'Chinese', 'Indian']
-    return np.random.choice(nationalities, p=[0.2, 0.09, 0.09, 0.09, 0.09, 0.09, 0.09, 0.09, 0.09, 0.08])
+    """
+    Generate a random nationality for a brand.
 
-# Function to create insert statements for the 'customers' table
-def generate_customer_insert_statements():
+    Returns:
+    - str: The generated nationality.
+    """
+    nationalities = ['Egyptian', 'American', 'French', 'Italian', 'Spanish', 'Mexican', 'Canadian', 'German', 'Chinese', 'Indian']
+    return random.choice(nationalities)
+
+def generate_stakeholders_insert_statements():
+    """
+    Generate INSERT statements for the 'stakeholders' table.
+
+    Returns:
+    - list: List of INSERT statements for the 'stakeholders' table.
+    """
     insert_statements = []
     called_brands = []
     stakeholder_id = 1
-    for _ in range(20):
-        brand_id = random.randint(1, 20)
+
+    for _ in range(N_BRANDS):
+        brand_id = random.randint(1, N_BRANDS)
         while brand_id in called_brands:
-            brand_id = random.randint(1, 20)
+            brand_id = random.randint(1, N_BRANDS)
             
         called_brands.append(brand_id)
         num_stakeholders = random.randint(1, 5)
         remaining_share = 100
+
         for i in range(num_stakeholders):
             first_name = fake.first_name()
             last_name = fake.last_name()
@@ -36,12 +53,11 @@ def generate_customer_insert_statements():
 
             remaining_share -= share
             
-            # Construct the insert statement
             insert_statement = f"INSERT INTO stakeholders (stakeholder_id, first_name, last_name, nationality, share, brand_id) VALUES ({stakeholder_id}, '{first_name}', '{last_name}', '{nationality}', {share}, {brand_id});"
             insert_statements.append(insert_statement)
             stakeholder_id += 1
     
     return insert_statements
 
-for i in generate_customer_insert_statements():
-    print(i)
+# Generate INSERT statements for the 'stakeholders' table
+stakeholders_insert_queries = generate_stakeholders_insert_statements()
