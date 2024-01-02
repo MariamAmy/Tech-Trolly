@@ -25,5 +25,5 @@ development process and the unique features of the application.
   ```
 
 3. Enjoy the Application:
-- The ```"application.py"``` file manages all app pages.
+- The ```application.py``` file manages all app pages.
 - Start enjoying the grocery shop application!
