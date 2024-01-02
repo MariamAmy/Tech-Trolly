@@ -226,6 +226,9 @@ class HomePage(tk.Frame):
         self.customer_email = customer_email
         self.cart_id = cart_id
 
+        self.current_page = 1
+        self.items_per_page = 50
+
         # Configure grid layout
         self.grid_rowconfigure(2, weight=1)
         self.grid_columnconfigure(0, weight=1)
@@ -398,11 +401,26 @@ class HomePage(tk.Frame):
                                                 font=label_font, command=self.on_discount_checked, bg="#ffffff")
         self.on_discount_check.grid(row=8, column=0, padx=10, pady=10)
 
-        # Logout frame
+        # Bottom frame
         self.logout_frame = tk.Frame(self.left_frame, bg="#ffffff")
         self.logout_frame.pack(side="bottom", padx=10, pady=10)
+
+        # Buttons for switching between pages
+        self.prev_page_button = tk.Button(self.logout_frame, text="<", command=self.switch_to_previous_page,
+                                          font=button_font)
+        self.prev_page_button.grid(row=0, column=0, padx=10, pady=10, columnspan=2)
+        if self.current_page == 1:
+            self.prev_page_button.config(state="disabled")
+        else:
+            self.prev_page_button.config(state="normal")
+
+        self.next_page_button = tk.Button(self.logout_frame, text=">", command=self.switch_to_next_page,
+                                          font=button_font)
+        self.next_page_button.grid(row=0, column=2, padx=10, pady=10, columnspan=2)
+
+        # Logout Button
         self.logout_button = tk.Button(self.logout_frame, text="Log Out", font=button_font, command=self.log_out)
-        self.logout_button.grid(sticky="sew")
+        self.logout_button.grid(row=1, column=0, columnspan=3, sticky="sew")
 
         # Fetch and display items
         self.fetch_items()
@@ -413,11 +431,16 @@ class HomePage(tk.Frame):
         self.center_canvas.bind("<Configure>", lambda e: self.on_canvas_configure(e.width))
 
     def button_release(self, event):
+        """
+        Update items on button release of price filter.
+        """
+
+        self.current_page = 1
         self.fetch_items()
 
     def on_canvas_configure(self, canvas_width):
         """
-        Update the scrollregion of the canvas to the size of the items_frame
+        Update the scrollregion of the canvas to the size of the items_frame.
         """
         self.center_canvas.configure(scrollregion=self.center_canvas.bbox("all"))
 
@@ -429,6 +452,36 @@ class HomePage(tk.Frame):
 
         # Move the items_frame to the center position
         self.center_canvas.coords(self.items_frame_window_id, x_position, 0)
+
+    def switch_to_previous_page(self):
+        """
+        Switch to the previous page and update the items.
+        """
+
+        if self.current_page > 1:
+            self.current_page -= 1
+            self.fetch_items()
+            self.next_page_button.config(state="normal")
+
+        # Disable previous page button when on the first page
+        if self.current_page == 1:
+            self.prev_page_button.config(state="disabled")
+
+    def switch_to_next_page(self):
+        """
+        Switch to the next page and update the items.
+        """
+        self.current_page += 1
+        self.fetch_items()
+
+        # Check if there are items on the next page
+        if len(self.shop_items) < self.items_per_page:
+            self.next_page_button.config(state="disabled")
+        else:
+            self.next_page_button.config(state="normal")
+
+        # Enable previous page button
+        self.prev_page_button.config(state="normal")
 
     def update_min_price(self, val):
         """
@@ -464,6 +517,7 @@ class HomePage(tk.Frame):
         - event: Event object (default is None).
         """
 
+        self.current_page = 1
         self.fetch_items()
 
     def on_brand_nationality_changed(self, event=None):
@@ -474,6 +528,7 @@ class HomePage(tk.Frame):
         - event: Event object (default is None).
         """
 
+        self.current_page = 1
         self.fetch_items()
 
     def on_category_changed(self, event=None):
@@ -484,6 +539,7 @@ class HomePage(tk.Frame):
         - event: Event object (default is None).
         """
 
+        self.current_page = 1
         self.fetch_items()
 
     def on_discount_checked(self):
@@ -491,6 +547,7 @@ class HomePage(tk.Frame):
         Callback function for on discount filter change.
         """
 
+        self.current_page = 1
         self.fetch_items()
     
     def on_search_clicked(self):
@@ -498,6 +555,7 @@ class HomePage(tk.Frame):
         Callback function for search button click.
         """
 
+        self.current_page = 1
         self.fetch_items()
 
     def display_items(self):
@@ -520,8 +578,11 @@ class HomePage(tk.Frame):
 
     def fetch_items(self):
         """
-        Fetch items based on selected filters.
+        Fetch items based on selected filters and current page.
         """
+
+        offset = (self.current_page - 1) * self.items_per_page
+        limit = self.items_per_page
 
         self.shop_items = []
         current_time = datetime.now()
@@ -579,6 +640,9 @@ class HomePage(tk.Frame):
         if filters:
             query += " WHERE " + " AND ".join(filters)
         
+        query += " LIMIT ? OFFSET ?"
+        values += (limit, offset)
+        
         cursor.execute(query, values)
 
         for row in cursor.fetchall():
@@ -593,6 +657,19 @@ class HomePage(tk.Frame):
                 item = Item(item_id, item_name, brand_name, brand_nationality, item_price, discount_price, sold, sold_24h, 
                             item_quantity, discount, egyptian_share)
                 self.shop_items.append(item)
+
+        # Disable previous page button when on the first page
+        if self.current_page == 1:
+            self.prev_page_button.config(state="disabled")
+        else:
+            self.prev_page_button.config(state="normal")
+
+        # Check if there are items on the next page
+        if len(self.shop_items) < self.items_per_page:
+            self.next_page_button.config(state="disabled")
+        else:
+            self.next_page_button.config(state="normal")
+
         self.display_items()
     
     def add_to_cart(self, item):
